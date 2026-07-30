@@ -1,0 +1,25 @@
+## Nota de mantenimiento del pipeline (corrección de datos)
+
+Durante el desarrollo de Parte 2 (claim_freq.py) se detectó que
+meps_2023_clean.csv contenía un 28.7% de NaN espurios en
+n_diagnosticos_unicos, pese a que etl.py ya aplicaba fillna(0) a esa
+columna. Causa: el archivo derivado había quedado desactualizado
+respecto al pipeline vigente — generado en una etapa anterior del
+proyecto (cuando se trabajaba solo con el corte 2023, antes de
+consolidar el flujo longitudinal 2018-2023) y nunca se regeneró tras
+las mejoras posteriores del ETL.
+
+Efecto: dropna() excluía sistemáticamente ~5,400 personas sin
+diagnósticos registrados, sesgando la muestra de todos los modelos de
+Parte 1 hacia personas de mayor utilización médica.
+
+Corrección: etl.py ahora regenera meps_2023_clean.csv directamente
+desde meps_2018_2023.csv en cada corrida, eliminando la posibilidad de
+que ambos archivos diverjan en el futuro.
+
+Todos los módulos de Parte 1 y el modelo de frecuencia de Parte 2 se
+re-ejecutaron sobre los datos corregidos; los resultados documentados
+en este archivo ya reflejan la corrección. Los hallazgos principales
+(drivers de gasto, distribución Gamma ganadora, patrones de desviación
+por segmento) se mantuvieron estables en dirección; las magnitudes
+exactas cambiaron al incorporar la muestra completa.

@@ -1,0 +1,25 @@
+# Datos
+data/raw/
+data/raw/cache/
+data/processed/
+
+# Modelos entrenados
+models_artifacts/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+
+# Entornos
+venv/
+.venv/
+
+# Streamlit
+.streamlit/
+
+# Sistema
+.DS_Store
+Thumbs.db

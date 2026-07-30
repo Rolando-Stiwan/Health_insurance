@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "healthrisk360"
+version = "0.1.0"
+description = "Pricing de seguro médico con MEPS 2018-2023 — portafolio actuarial"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas",
+    "numpy",
+    "statsmodels",
+    "scikit-learn",
+    "matplotlib",
+    "scipy",
+    "joblib",
+    "lightgbm",
+    "shap", "fastapi", "uvicorn[standard]", "pydantic",
+    "streamlit", "plotly", "requests",
+    "pytest",
+    "httpx",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
