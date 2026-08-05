@@ -1,10 +1,10 @@
 # Datos
 data/raw/
 data/raw/cache/
-data/processed/
+#data/processed/
 
 # Modelos entrenados
-models_artifacts/
+#models_artifacts/
 
 # Python
 __pycache__/

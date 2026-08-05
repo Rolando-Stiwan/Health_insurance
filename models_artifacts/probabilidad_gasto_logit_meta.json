@@ -1,0 +1,33 @@
+{
+  "fecha_entrenamiento": "2026-07-26T21:46:05.134611",
+  "modelo": "Logit (Binomial)",
+  "features": [
+    "edad",
+    "sexo_femenino",
+    "raza",
+    "estado_civil",
+    "region",
+    "años_educacion",
+    "nacido_usa",
+    "categoria_pobreza",
+    "ingreso_familiar",
+    "tipo_cobertura",
+    "sin_seguro_anual",
+    "salud_general",
+    "salud_mental",
+    "dx_hipertension",
+    "dx_diabetes",
+    "dx_asma",
+    "dx_cancer",
+    "dx_artritis",
+    "dx_cardiopatia",
+    "dx_ictus",
+    "dx_enfisema",
+    "n_diagnosticos_unicos",
+    "accidentes_trabajo"
+  ],
+  "accuracy_test": 0.907,
+  "brier_test": 0.0569,
+  "aic": 4049.5,
+  "random_state": 42
+}
