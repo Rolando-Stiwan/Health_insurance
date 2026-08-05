@@ -54,7 +54,7 @@ healthrisk360/
 
 ### 5. Deployment
 - **API REST (FastAPI)**: endpoints `/riesgo`, `/severidad`, `/pricing`, `/stress-test`, con modelos cargados una sola vez al inicio (arquitectura training/inference separada).
-- **Dashboard (Streamlit)**: 5 páginas — Desviaciones, Drivers, Segmentos, Pricing (conectado a la API), Stress Test (conectado a la API).
+- **Dashboard (Streamlit)**: 6 páginas — Desviaciones, Drivers, Segmentos, Pricing (conectado a la API), Stress Test (conectado a la API), Explainability (SHAP).
 - **Tests**: 28 tests de pytest cubriendo ETL, modelos y API.
 - **CI**: GitHub Actions valida instalabilidad del paquete en cada push (los datos y modelos no se versionan, ver nota abajo).
 - **Docker**: containerización de API y dashboard para despliegue en Render/Railway.
@@ -103,6 +103,53 @@ uvicorn api.main:app --reload
 ```bash
 streamlit run dashboard/app.py
 ```
+
+## Despliegue con Docker
+
+La API y el dashboard se empaquetan juntos en un único contenedor, por
+decisión deliberada (no la arquitectura "ideal" de microservicios, sino
+la más pragmática para este contexto):
+
+- Render y Railway, en su capa gratuita, exponen típicamente un solo
+  puerto público por servicio — desplegar API y dashboard como
+  contenedores separados requeriría 2 servicios (con más fricción de
+  configuración y, en algunos planes, costo adicional).
+- Dentro del contenedor, la API corre en el puerto 8000 (uso interno,
+  no expuesto), y el dashboard Streamlit se sirve en el puerto público
+  asignado por la plataforma. Las páginas de Pricing y Stress Test del
+  dashboard llaman a la API vía `localhost:8000` — funciona sin
+  configuración adicional porque ambos procesos comparten el mismo
+  contenedor.
+
+En un entorno de producción real, con tráfico y necesidad de escalar
+cada servicio de forma independiente, la arquitectura correcta sería
+contenedores separados orquestados con docker-compose o Kubernetes —
+aquí se prioriza simplicidad de despliegue sobre separación de
+responsabilidades, una decisión consciente para el alcance de este
+proyecto.
+
+Nota técnica: las versiones de FastAPI, Starlette, Uvicorn y Streamlit
+están fijadas explícitamente en `pyproject.toml` (en vez de dejarse sin
+pin) tras detectar un conflicto de compatibilidad entre Starlette y
+Streamlit al reconstruir el entorno desde cero dentro del contenedor
+— una versión no fijada resolvía a una combinación incompatible que
+nunca aparecía en el entorno de desarrollo local (ya instalado con
+versiones compatibles de antes). Buena práctica general: fijar
+versiones exactas evita que "funciona en mi máquina" se rompa al
+reconstruir el entorno en otro lugar.
+
+### Construir y correr localmente
+```bash
+docker build -t healthrisk360 .
+docker run -p 8501:8501 -e PORT=8501 healthrisk360
+```
+Luego abre `http://localhost:8501`.
+
+### Desplegar en Render/Railway
+Ambas plataformas detectan automáticamente el `Dockerfile` al conectar
+el repositorio de GitHub. Configurar la variable de entorno `PORT`
+según lo requiera la plataforma (Render/Railway la inyectan
+automáticamente en la mayoría de los casos).
 
 ## Nota sobre datos y modelos
 

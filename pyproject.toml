@@ -11,13 +11,22 @@ dependencies = [
     "pandas",
     "numpy",
     "statsmodels",
-    "scikit-learn",
+    "scikit-learn==1.4.2",
     "matplotlib",
     "scipy",
     "joblib",
     "lightgbm",
-    "shap", "fastapi", "uvicorn[standard]", "pydantic",
-    "streamlit", "plotly", "requests",
+    "shap",
+
+    "fastapi==0.116.1",
+    "starlette==0.47.2",
+    "uvicorn[standard]==0.35.0",
+    "pydantic",
+
+    "streamlit==1.30.0",
+    "plotly",
+    "requests",
+
     "pytest",
     "httpx",
 ]

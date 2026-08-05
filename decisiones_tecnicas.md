@@ -667,3 +667,39 @@ funcionamiento, pendiente de migración en iteración futura.
 
 ____________________________________________________________________________
 
+## Despliegue con Docker
+
+La API y el dashboard se empaquetan juntos en un único contenedor, por
+decisión deliberada (no la arquitectura "ideal" de microservicios, sino
+la más pragmática para este contexto):
+
+- Render y Railway, en su capa gratuita, exponen típicamente un solo
+  puerto público por servicio — desplegar API y dashboard como
+  contenedores separados requeriría 2 servicios (con más fricción de
+  configuración y, en algunos planes, costo adicional).
+- Dentro del contenedor, la API corre en el puerto 8000 (uso interno,
+  no expuesto), y el dashboard Streamlit se sirve en el puerto público
+  asignado por la plataforma. Las páginas de Pricing y Stress Test del
+  dashboard llaman a la API vía `localhost:8000` — funciona sin
+  configuración adicional porque ambos procesos comparten el mismo
+  contenedor.
+
+En un entorno de producción real, con tráfico y necesidad de escalar
+cada servicio de forma independiente, la arquitectura correcta sería
+contenedores separados orquestados con docker-compose o Kubernetes —
+aquí se prioriza simplicidad de despliegue sobre separación de
+responsabilidades, una decisión consciente para el alcance de este
+proyecto.
+
+### Construir y correr localmente
+```bash
+docker build -t healthrisk360 .
+docker run -p 8501:8501 -e PORT=8501 healthrisk360
+```
+Luego abre `http://localhost:8501`.
+
+### Desplegar en Render/Railway
+Ambas plataformas detectan automáticamente el `Dockerfile` al conectar
+el repositorio de GitHub. Configurar la variable de entorno `PORT`
+según lo requiera la plataforma (Render/Railway la inyectan
+automáticamente en la mayoría de los casos).
