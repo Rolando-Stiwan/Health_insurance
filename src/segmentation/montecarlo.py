@@ -44,12 +44,13 @@ ROOT = Path(__file__).resolve().parents[2]
 # =========================================================
 # 1. PREPARAR PARÁMETROS DE SIMULACIÓN POR PERSONA
 # =========================================================
-def preparar_parametros_simulacion(df):
-    """
+#Funcion para usar todos los datos para la simulacion
+"""def preparar_parametros_simulacion(df):
+    
     Calcula, para cada persona, prob_gasto (Bernoulli) y los parámetros
     de la Gamma de severidad (shape, scale) a partir de la media
     predicha y la dispersión real del GLM Gamma entrenado.
-    """
+    
     modelo_prob, _ = cargar_modelo_probabilidad()
     modelo_sev, _ = cargar_modelo_severidad()
 
@@ -71,8 +72,39 @@ def preparar_parametros_simulacion(df):
     print(f"[montecarlo] Dispersión del GLM Gamma (model.scale): {dispersion:.4f}")
     print(f"[montecarlo] Shape de la Gamma de severidad: {shape_gamma:.4f}")
 
-    return df_model
+    return df_model """
 
+#Funcion para usar solo 2000 para la simulacion
+def preparar_parametros_simulacion(df, max_personas=2000, random_state=42):
+    """
+    max_personas: limita el tamaño del portafolio simulado. En local/
+    notebook puede usarse el dataset completo; en el despliegue web
+    (memoria limitada del tier gratuito) se usa una submuestra fija
+    para mantener el uso de memoria bajo control sin cambiar la
+    metodología (Bernoulli x Gamma), solo el tamaño del portafolio
+    demostrado.
+    """
+    modelo_prob, _ = cargar_modelo_probabilidad()
+    modelo_sev, _ = cargar_modelo_severidad()
+
+    df_model = df[FEATURES + ["persona_id"]].dropna().reset_index(drop=True)
+
+    if len(df_model) > max_personas:
+        df_model = df_model.sample(n=max_personas, random_state=random_state).reset_index(drop=True)
+
+    prob_gasto = predecir_probabilidad_gasto(df_model, modelo=modelo_prob)
+    severidad_media = predecir_severidad(df_model, modelo=modelo_sev)
+
+    dispersion = modelo_sev.scale
+    shape_gamma = 1.0 / dispersion
+    scale_gamma = severidad_media * dispersion
+
+    df_model["prob_gasto"] = prob_gasto
+    df_model["severidad_media"] = severidad_media
+    df_model["shape_gamma"] = shape_gamma
+    df_model["scale_gamma"] = scale_gamma
+
+    return df_model
 
 # =========================================================
 # 2. SIMULACIÓN MONTE CARLO — PÉRDIDA AGREGADA DEL PORTAFOLIO
