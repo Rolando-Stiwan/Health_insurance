@@ -24,6 +24,15 @@ factor, mismo principio que Vasicek para riesgo de crédito).
 **Catástrofe regional**: choque de severidad localizado en una región.
 """)
 
+st.caption(
+    "⚠️ Por límites de memoria del hosting gratuito, esta demo simula un "
+    "portafolio de 2,000 personas (en vez del dataset completo de ~15,000) "
+    "La metodología es idéntica a la documentada en "
+    "decisiones_tecnicas.md — solo cambia la escala para "
+    "esta demostración web."
+)
+
+
 try:
     resp_health = requests.get(f"{API_URL}/health", timeout=3)
     api_disponible = resp_health.status_code == 200

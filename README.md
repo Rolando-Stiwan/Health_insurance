@@ -151,6 +151,16 @@ el repositorio de GitHub. Configurar la variable de entorno `PORT`
 según lo requiera la plataforma (Render/Railway la inyectan
 automáticamente en la mayoría de los casos).
 
+
+### Limitación de memoria en el despliegue gratuito
+El endpoint /stress-test corre sobre una submuestra de 2,000 personas 
+(en vez de las ~15,000 del dataset completo) para mantenerse dentro del límite de 512MB 
+de RAM del tier gratuito de Render. La metodología completa (con el 
+dataset completo, 10,000 simulaciones) está documentada y validada en 
+decisiones_tecnicas.md y puede reproducirse localmente sin esta 
+restricción.
+
+
 ## Nota sobre datos y modelos
 
 Los archivos de datos MEPS crudos/procesados y los modelos entrenados (`models_artifacts/`) no se versionan en este repositorio por tamaño y por licenciamiento de los datos originales (públicos de AHRQ, descargables directamente desde [meps.ahrq.gov](https://meps.ahrq.gov)). Como consecuencia, la suite de tests en CI (GitHub Actions) valida instalabilidad y estructura del paquete, pero la mayoría de tests funcionales se ejecutan localmente, donde sí existen los datos y modelos.
