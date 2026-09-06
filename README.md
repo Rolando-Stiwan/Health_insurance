@@ -2,6 +2,8 @@
 
 Pricing de seguro médico — analítica actuarial de siniestralidad en Salud, construida sobre datos longitudinales de MEPS (Medical Expenditure Panel Survey), 2018-2023.
 
+🌐 **[Probar aplicación en vivo](https://health-insurance-nvz9.onrender.com)** 
+
 Proyecto de portafolio diseñado para demostrar el ciclo completo de analítica actuarial en Salud: desde ETL y diagnóstico de distribución, pasando por modelado predictivo de frecuencia/severidad, segmentación de riesgo, explicabilidad, gestión de capital, hasta el despliegue de un producto funcional (API + dashboard).
 
 ## Stack técnico
